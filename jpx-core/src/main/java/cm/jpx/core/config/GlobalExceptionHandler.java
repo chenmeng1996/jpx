@@ -51,6 +51,7 @@ public class GlobalExceptionHandler {
         return ResponseUtil.badArgumentValue();
     }
 
+    //处理 参数校验错误
     @ExceptionHandler(ValidationException.class)
     @ResponseBody
     public Object badArgumentHandler(ValidationException e) {

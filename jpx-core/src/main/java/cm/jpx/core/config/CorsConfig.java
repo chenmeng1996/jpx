@@ -1,5 +1,7 @@
 package cm.jpx.core.config;
 
+import com.google.common.collect.Lists;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -21,9 +23,23 @@ public class CorsConfig {
     }
 
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsFilter corsFilterBean() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", buildConfig()); // 4 对接口配置跨域设置
         return new CorsFilter(source);
+    }
+
+
+    /**
+     * 将CorsFilter的优先级设为最高，使之优先于shiro的过滤器
+     * @return
+     */
+    @Bean(name = "corsFilter")
+    public FilterRegistrationBean corsFilter() {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter(corsFilterBean());
+        registrationBean.setUrlPatterns(Lists.newArrayList("/*"));
+        registrationBean.setOrder(1);
+        return registrationBean;
     }
 }

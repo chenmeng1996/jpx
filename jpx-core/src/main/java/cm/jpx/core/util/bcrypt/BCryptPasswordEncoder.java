@@ -73,12 +73,19 @@ public class BCryptPasswordEncoder {
         return BCrypt.hashpw(rawPassword.toString(), salt);
     }
 
+    /**
+     * 检查密码是否正确
+     * @param rawPassword 未加密密码
+     * @param encodedPassword 加密密码
+     * @return
+     */
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         if (encodedPassword == null || encodedPassword.length() == 0) {
             logger.warn("Empty encoded password");
             return false;
         }
 
+        //对加密密码的形式进行校验
         if (!BCRYPT_PATTERN.matcher(encodedPassword).matches()) {
             logger.warn("Encoded password does not look like BCrypt");
             return false;

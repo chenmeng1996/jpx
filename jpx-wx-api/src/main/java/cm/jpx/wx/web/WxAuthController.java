@@ -65,6 +65,7 @@ public class WxAuthController {
             return ResponseUtil.badArgument();
         }
 
+        //检查用户名是否唯一
         List<LitemallUser> userList = userService.queryByUsername(username);
         LitemallUser user = null;
         if (userList.size() > 1) {
@@ -75,6 +76,7 @@ public class WxAuthController {
             user = userList.get(0);
         }
 
+        //检查密码
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if (!encoder.matches(password, user.getPassword())) {
             return ResponseUtil.fail(WxResponseCode.AUTH_INVALID_ACCOUNT, "账号密码不对");
@@ -95,7 +97,7 @@ public class WxAuthController {
         // token
         String token = UserTokenManager.generateToken(user.getId());
 
-        Map<Object, Object> result = new HashMap<Object, Object>();
+        Map<Object, Object> result = new HashMap<>();
         result.put("token", token);
         result.put("userInfo", userInfo);
         return ResponseUtil.ok(result);
@@ -183,6 +185,7 @@ public class WxAuthController {
         if (StringUtils.isEmpty(phoneNumber)) {
             return ResponseUtil.badArgument();
         }
+        //验证手机号格式
         if (!RegexUtil.isMobileExact(phoneNumber)) {
             return ResponseUtil.badArgumentValue();
         }
@@ -191,10 +194,12 @@ public class WxAuthController {
             return ResponseUtil.fail(WxResponseCode.AUTH_CAPTCHA_UNSUPPORT, "小程序后台验证码服务不支持");
         }
         String code = CharUtil.getRandomNum(6);
+        //本地缓存验证码
         boolean successful = CaptchaCodeManager.addToCache(phoneNumber, code);
         if (!successful) {
             return ResponseUtil.fail(WxResponseCode.AUTH_CAPTCHA_FREQUENCY, "验证码未超时1分钟，不能发送");
         }
+        //短信发送验证码
         notifyService.notifySmsTemplate(phoneNumber, NotifyType.CAPTCHA, new String[]{code});
 
         return ResponseUtil.ok();

@@ -1,11 +1,5 @@
 package cm.jpx.wx.util;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -14,10 +8,15 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import java.util.*;
+
+/**
+ * Json Web Token辅助类
+ */
 public class JwtHelper {
 	// 秘钥
 	static final String SECRET = "X-Litemall-Token";
-	// 签名是有谁生成
+	// 签名是由谁生成
 	static final String ISSUSER = "LITEMALL";
 	// 签名的主题
 	static final String SUBJECT = "this is litemall token";
@@ -72,7 +71,7 @@ public class JwtHelper {
 		return 0;
 	}
 	
-	public  Date getAfterDate(Date date, int year, int month, int day, int hour, int minute, int second){
+	public Date getAfterDate(Date date, int year, int month, int day, int hour, int minute, int second){
 		if(date == null){
 			date = new Date();
 		}

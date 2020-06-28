@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * json工具类
+ */
 public class JacksonUtil {
 
     private static final Log logger = LogFactory.getLog(JacksonUtil.class);

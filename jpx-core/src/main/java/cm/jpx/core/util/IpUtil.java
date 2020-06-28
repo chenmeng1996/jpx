@@ -14,6 +14,7 @@ public class IpUtil {
 
     private static final Log logger = LogFactory.getLog(IpUtil.class);
 
+    //从request中获取客户端ip地址
     public static String getIpAddr(HttpServletRequest request) {
         String ipAddress;
         try {

@@ -2,6 +2,9 @@ package cm.jpx.core.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * 微信小程序相关参数
+ */
 @ConfigurationProperties(prefix = "litemall.wx")
 public class WxProperties {
 
