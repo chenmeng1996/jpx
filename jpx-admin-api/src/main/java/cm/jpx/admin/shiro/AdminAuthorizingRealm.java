@@ -36,17 +36,21 @@ public class AdminAuthorizingRealm extends AuthorizingRealm {
 
         LitemallAdmin admin = (LitemallAdmin) getAvailablePrincipal(principals);
         Integer[] roleIds = admin.getRoleIds();
+        // 用户的角色集合
         Set<String> roles = roleService.queryByIds(roleIds);
         Set<String> permissions = permissionService.queryByRoleIds(roleIds);
+        // 权限信息对象info,用来存放查出的用户的所有的角色（role）及权限（permission）
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roles);
         info.setStringPermissions(permissions);
         return info;
     }
 
+    /*主要是用来进行身份认证的，也就是说验证用户输入的账号和密码是否正确。*/
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 
+        //获取输入的用户名和密码
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
         String username = upToken.getUsername();
         String password = new String(upToken.getPassword());
@@ -58,6 +62,7 @@ public class AdminAuthorizingRealm extends AuthorizingRealm {
             throw new AccountException("密码不能为空");
         }
 
+        //根据 用户名 获取 用户账户信息
         List<LitemallAdmin> adminList = adminService.findAdmin(username);
         Assert.state(adminList.size() < 2, "同一个用户名存在两个账户");
         if (adminList.size() == 0) {
@@ -65,6 +70,7 @@ public class AdminAuthorizingRealm extends AuthorizingRealm {
         }
         LitemallAdmin admin = adminList.get(0);
 
+        //密码比较
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if (!encoder.matches(password, admin.getPassword())) {
             throw new UnknownAccountException("找不到用户（" + username + "）的帐号信息");
